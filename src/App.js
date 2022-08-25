@@ -6,7 +6,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <p>
-          Hello world 4.
+          Hello world from branch_2.
         </p>
         <a
           className="App-link"

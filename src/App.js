@@ -13,7 +13,13 @@ fcl.config({
   "discovery.wallet": walletDiscovery, // dev wallet
 })
 
+
 function App() {
+
+  const contractName = "ZeedzINO"
+  const contractAddress = "0x7dc7430a06f38af3"
+  const collectionPublicPath = "ZeedzINO.ZeedzCollectionPublic"
+
 
   const [user, setUser] = useState({addr: ''})
   const [result, setResult] = useState('');
@@ -32,22 +38,14 @@ function App() {
 
   const addCollections = async (address) => {
     console.log('====== addCollections: ')
-    //A.9f2eb43b6df02730.Momentables.NFT
-    const contractName = "Momentables"
-    const contractAddress = "0x9f2eb43b6df02730"
-
-    console.log('====== tx: ', ADD_COLLECTION(contractName, contractAddress))
+    console.log('====== tx: ', ADD_COLLECTION(contractName, contractAddress, collectionPublicPath))
     const res = await fcl.mutate({
-      cadence: ADD_COLLECTION(contractName, contractAddress)
+      cadence: ADD_COLLECTION(contractName, contractAddress, collectionPublicPath)
     });
-
     console.log('====== add success')
   };
 
   const getUserCollections = async (address) => {
-    const contractName = "Momentables"
-    const contractAddress = "0x9f2eb43b6df02730"
-    const collectionPath = { domain: "public", identifier: "MomentablesCollection"}
     console.log('====== get tx: ', GET_NFT_COLLECTION(contractName, contractAddress))
     const res = await fcl.query({
       cadence: GET_NFT_COLLECTION(contractName, contractAddress),
@@ -55,7 +53,6 @@ function App() {
         arg(address, t.Address)
       ],
     });
-  
     console.log('========= res ', res)
     setResult(res)
 
@@ -63,25 +60,26 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
         <p>
-          Hello world 4.
+          Add Collection Tool 
         </p>
         <div>
-          {user.addr ? user.addr : ""}
-          <button onClick={logIn}>Log In</button>
-          <button onClick={logOut}>Log Out</button>
+          {user.addr ? "" : <button onClick={logIn}>Log In</button>}
+          <p>
+          Logged in user: {user.addr ? user.addr : ""}
+          <button style={{marginLeft: '10px'}} onClick={logOut}>Log Out</button>
+          </p>
+          
         </div>
-        <div>
+        <div style={{paddingTop: '20px'}}>
           <button onClick={() => addCollections(user.addr)}>Add Collections</button>
-
+        </div>
+        <div style={{paddingTop: '20px'}}>
           <button onClick={() => getUserCollections(user.addr)}>Get User Collections</button>
         </div>
         <div>
            Result: {result}
-        </div>
-      </header>
-      
+        </div>      
     </div>
   );
 }

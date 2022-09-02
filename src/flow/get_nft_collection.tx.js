@@ -1,5 +1,5 @@
 export const GET_NFT_COLLECTION = (contractName, contractAddress) => `
-import ZeedzINO from 0x7dc7430a06f38af3
+import ${contractName} from ${contractAddress}
 import NonFungibleToken from 0x631e88ae7f1d7c20
 
 pub fun main(accountAddress: Address): [&NonFungibleToken.NFT] {

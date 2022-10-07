@@ -16,13 +16,16 @@ fcl.config({
 
 function App() {
 
-  const contractName = "ZeedzINO"
-  const contractAddress = "0x7dc7430a06f38af3"
+  // const contractName = "ZeedzINO"
+  // const contractAddress = "0x7dc7430a06f38af3"
   const collectionPublicPath = "ZeedzINO.ZeedzCollectionPublic"
 
 
   const [user, setUser] = useState({addr: ''})
   const [result, setResult] = useState('');
+  const [contractName, setContractName] = useState("");
+  const [contractAddress, setContractAddress] = useState("");
+  const [addCollectionStatus, setAddCollectionStatus] = useState('');
 
   useEffect(() => {
     fcl.currentUser.subscribe(setUser)
@@ -37,14 +40,23 @@ function App() {
   }
 
   const addCollections = async (address) => {
-    console.log('====== addCollections: ')
+    console.log('====== addCollections: ', contractName)
+    console.log('====== address: ', contractAddress)
     console.log('====== tx: ', ADD_COLLECTION(contractName, contractAddress, collectionPublicPath))
-    const res = await fcl.mutate({
-      cadence: ADD_COLLECTION(contractName, contractAddress, collectionPublicPath)
-    });
-    console.log('====== add success')
+    try {
+      const res = await fcl.mutate({
+        cadence: ADD_COLLECTION(contractName, contractAddress, collectionPublicPath)
+      });
+      console.log('====== add success')
+      setAddCollectionStatus('Success')
+    } catch (e) {
+      setAddCollectionStatus('Failed')
+    }
+    
   };
 
+  // test commit
+  
   const getUserCollections = async (address) => {
     console.log('====== get tx: ', GET_NFT_COLLECTION(contractName, contractAddress))
     const res = await fcl.query({
@@ -71,15 +83,40 @@ function App() {
           </p>
           
         </div>
-        <div style={{paddingTop: '20px'}}>
-          <button onClick={() => addCollections(user.addr)}>Add Collections</button>
+        <div style={{margin: '10px'}}>
+          Add Collection:
+          <div>
+            Contract Name:
+            <input
+              style={{margin: '10px'}}
+              type="text"
+              value={contractName}
+              onChange={(e) => setContractName(e.target.value)}
+            />
+          
+            Contract Address:
+            <input
+              style={{margin: '10px'}}
+              type="text"
+              value={contractAddress}
+              onChange={(e) => setContractAddress(e.target.value)}
+            />
+          
+            <button style={{margin: '10px'}} onClick={() => addCollections(user.addr)}>Add Collections</button>
+          </div>
+          <div>
+            Add Collection Status: {addCollectionStatus}
+          </div>
         </div>
-        <div style={{paddingTop: '20px'}}>
-          <button onClick={() => getUserCollections(user.addr)}>Get User Collections</button>
-        </div>
-        <div>
-           Result: {result}
-        </div>      
+
+        <div style={{marginTop: '20px'}}>
+          <div style={{margin: '10px'}}>
+            <button onClick={() => getUserCollections(user.addr)}>Get User Collections</button>
+            <div style={{margin: '10px'}}>
+              Collections: {result}
+            </div>
+          </div> 
+        </div>     
     </div>
   );
 }
